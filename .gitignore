@@ -1,0 +1,68 @@
+    getMaxGuests(category) {
+        switch (category) {
+            case 'Стандарт':
+            case 'Люкс':
+                return 2;
+            case 'Апартаменты':
+                return 4;
+            default:
+                throw new Error("Некорректная категория номера.");
+        }
+    }
+
+    toggleStatus() {
+        this.status = this.status === 'свободен' ? 'занят' : 'свободен';
+    }
+}
+
+
+Hotel.prototype.addRoom = function(room) {
+    this.rooms.push(room);
+}
+
+
+Hotel.prototype.getAvailableRooms = function() {
+    return this.rooms.filter(room => room.status === 'свободен');
+}
+
+
+const hotel1 = new Hotel("Отель 1", regions["1"]);
+const hotel2 = new Hotel("Отель 2", regions["2"]);
+
+for (let i = 1; i <= 10; i++) {
+    hotel1.addRoom(new Room(`101-${i}`, 'Стандарт'));
+    hotel1.addRoom(new Room(`201-${i}`, 'Люкс'));
+    hotel1.addRoom(new Room(`301-${i}`, 'Апартаменты'));
+    
+    hotel2.addRoom(new Room(`102-${i}`, 'Стандарт'));
+    hotel2.addRoom(new Room(`202-${i}`, 'Люкс'));
+    hotel2.addRoom(new Room(`302-${i}`, 'Апартаменты'));
+}
+
+
+
+
+function test() {
+    console.log("Начало тестирования...");
+
+    
+    const roomToTest = hotel1.rooms[0]; 
+    roomToTest.toggleStatus();
+    console.assert(roomToTest.status === 'занят', "Ошибка: статус не изменился на 'занят'.");
+
+    roomToTest.toggleStatus();
+    console.assert(roomToTest.status === 'свободен', "Ошибка: статус не изменился на 'свободен'.");
+
+
+    const availableRooms = hotel1.getAvailableRooms();
+    console.assert(availableRooms.length === 30, "Ошибка: количество свободных номеров не совпадает.");
+
+
+    roomToTest.toggleStatus();
+    const newAvailableRooms = hotel1.getAvailableRooms();
+    console.assert(newAvailableRooms.length === 29, "Ошибка: количество свободных номеров не совпадает после изменения статуса.");
+
+    console.log("Все тесты пройдены успешно!");
+}
+
+test();
